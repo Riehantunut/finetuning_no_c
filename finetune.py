@@ -16,6 +16,8 @@ from typing import Any, Dict, List, Optional, Union
 
 from transformers import Trainer
 
+import numpy as np
+
 
 common_voice_train = load_dataset("common_voice", "fi", split="train+validation")
 common_voice_test = load_dataset("common_voice", "fi", split="test")
