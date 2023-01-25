@@ -18,6 +18,10 @@ from transformers import Trainer
 
 import numpy as np
 
+#from huggingface_hub import notebook_login
+#notebook_login()
+
+
 
 common_voice_train = load_dataset("common_voice", "fi", split="train+validation")
 common_voice_test = load_dataset("common_voice", "fi", split="test")
@@ -76,6 +80,13 @@ with open('vocab.json', 'w') as vocab_file:
     json.dump(vocab_dict, vocab_file)
 
 tokenizer = Wav2Vec2CTCTokenizer.from_pretrained("./", unk_token="[UNK]", pad_token="[PAD]", word_delimiter_token="|")
+
+repo_name = "wav2vec2-large-xls-r-300m-sve-fi-colab"
+#from huggingface_hub import create_repo
+#create_repo("arada/" + repo_name)
+
+#tokenizer.push_to_hub(repo_name)
+
 
 feature_extractor = Wav2Vec2FeatureExtractor(feature_size=1, sampling_rate=16000, padding_value=0.0, do_normalize=True, return_attention_mask=True)
 processor = Wav2Vec2Processor(feature_extractor=feature_extractor, tokenizer=tokenizer)
@@ -187,7 +198,7 @@ training_args = TrainingArguments(
   per_device_train_batch_size=16,
   gradient_accumulation_steps=2,
   evaluation_strategy="steps",
-  num_train_epochs=30,
+  num_train_epochs=80, ## to change
   gradient_checkpointing=True,
   fp16=True, # this should change to true if on GPU
   save_steps=400,
@@ -211,5 +222,7 @@ trainer = Trainer(
 )
 
 trainer.train()
+
+trainer.save_model("/")
 
 
